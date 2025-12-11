@@ -1,5 +1,5 @@
-import GoogleGenerativeAI from "@google/generative-ai";
-import type { Modality } from "@google/generative-ai";
+import type { Handler } from "@netlify/functions";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const handler: Handler = async (event) => {
   try {
@@ -13,16 +13,24 @@ export const handler: Handler = async (event) => {
     });
 
     const result = await model.generateContent({
-      contents: [{ parts: [{ text }] }],
-      responseModalities: [Modality.AUDIO],
-      speechConfig: {
-        voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } },
+      contents: [{ text }],
+      generationConfig: {
+        responseModalities: ["AUDIO"],   // ← 不能用 Modality
+        speechConfig: {
+          voiceConfig: {
+            prebuiltVoiceConfig: { voiceName: "Kore" },
+          },
+        },
       },
     });
 
-    const audio = result.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    const audio =
+      result.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data || null;
 
-    return { statusCode: 200, body: JSON.stringify({ audio }) };
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ audio }),
+    };
   } catch (e: any) {
     return { statusCode: 500, body: e.message };
   }
