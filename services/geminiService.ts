@@ -20,7 +20,7 @@ export const getDefinition = async (
   nativeLang: string,
   targetLang: string
 ) => {
-  return await callBackend("gemini-proxy-definition", {
+  return await callBackend("gemini-definition", {
     term,
     nativeLang,
     targetLang,
@@ -29,7 +29,7 @@ export const getDefinition = async (
 
 // 2. Generate Image
 export const generateImage = async (term: string, targetLang: string) => {
-  return await callBackend("gemini-proxy-image", {
+  return await callBackend("gemini-image", {
     term,
     targetLang,
   });
@@ -37,7 +37,7 @@ export const generateImage = async (term: string, targetLang: string) => {
 
 // 3. Generate Speech
 export const generateSpeech = async (text: string) => {
-  return await callBackend("gemini-proxy-tts", { text });
+  return await callBackend("gemini-tts", { text });
 };
 
 // 4. Generate Story
@@ -46,7 +46,7 @@ export const generateStory = async (
   nativeLang: string,
   targetLang: string
 ) => {
-  return await callBackend("gemini-proxy-story", {
+  return await callBackend("gemini-story", {
     words,
     nativeLang,
     targetLang,
@@ -60,7 +60,7 @@ export const getQuickAiAnswer = async (
   nativeLang: string,
   targetLang: string
 ) => {
-  return await callBackend("gemini-proxy-quick", {
+  return await callBackend("gemini-quick", {
     term,
     type,
     nativeLang,
