@@ -22,12 +22,12 @@ export const handler: Handler = async (event) => {
 
     const result = await model.generateContent(prompt);
 
-    // IMPORTANT: unwrap text result
-    const text = result.response.text();
+    const text = result.response.text(); // Gemini returns a JSON string
 
     return {
       statusCode: 200,
-      body: text,
+      headers: { "Content-Type": "application/json" },
+      body: text, // return JSON string directly
     };
   } catch (err: any) {
     return {
