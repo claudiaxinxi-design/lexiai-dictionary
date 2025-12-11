@@ -8,30 +8,31 @@ export const handler: Handler = async (event) => {
     const apiKey = process.env.GEMINI_API_KEY;
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // 不使用 responseSchema，因为 Type 不存在，会导致 Netlify 打包失败
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
     });
 
     const prompt = `
-      Define "${term}" in ${targetLang} for a ${nativeLang} speaker.
-      Include:
-      1) A clear definition
-      2) Two example sentences (target + native)
-      3) A short, fun usage note
-      Return as JSON with keys:
+      Define the term "${term}" (in ${targetLang}) for a speaker of ${nativeLang}.
+      Provide JSON with fields:
       - definition
-      - examples (array of { target, native })
+      - examples (2 objects {target, native})
       - usageNote
     `;
 
     const result = await model.generateContent(prompt);
 
+    // IMPORTANT: unwrap text result
+    const text = result.response.text();
+
     return {
       statusCode: 200,
-      body: result.response.text(),
+      body: text,
     };
-  } catch (e: any) {
-    return { statusCode: 500, body: e.message };
+  } catch (err: any) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: err.message }),
+    };
   }
 };
